@@ -2,8 +2,11 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 from .models import Athlete, CompleteInfo, BodySize, Disease
-from .serializers import AthleteSerializer, CompleteInfoSerializer, BodySizeSerializer, DiseaseSerializer
+from .serializers import AthleteSerializer, CompleteInfoSerializer, BodySizeSerializer, DiseaseSerializer, \
+    PracticeSerializer
 from django.shortcuts import get_object_or_404
+import random
+from .practices import practices_list
 
 
 # Athlete View
@@ -132,3 +135,25 @@ class DiseaseAPIView(APIView):
         disease = get_object_or_404(Disease, pk=pk)
         disease.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
+
+
+class SetPracticesToAthleteAPIView(APIView):
+    http_method_names = ["get", "post", "delete"]
+
+    def post(self, request, pk):
+        practice = self.get_random_choices()
+        Athlete.objects.filter(pk=pk).update(practices=practice)
+        return Response(practice, status=status.HTTP_201_CREATED)
+
+    def get(self, request, pk):
+        athlete = get_object_or_404(Athlete, pk=pk)
+        serializer = PracticeSerializer(athlete)
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+    def delete(self, request, pk):
+        Athlete.objects.filter(pk=pk).update(practices=None)
+        return Response(status=status.HTTP_204_NO_CONTENT)
+
+    @staticmethod
+    def get_random_choices():
+        return random.choice(practices_list)

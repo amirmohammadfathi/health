@@ -8,6 +8,7 @@ class Athlete(AbstractBaseUser):
     last_name = models.CharField(max_length=250, blank=True, null=True)
     is_male = models.BooleanField(default=True, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
+    practices = models.JSONField(blank=True, null=True)
 
 
 class CompleteInfo(models.Model):

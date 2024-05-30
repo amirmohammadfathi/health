@@ -24,3 +24,9 @@ class DiseaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Disease
         fields = "__all__"
+
+
+class PracticeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Athlete
+        fields = "__all__"
